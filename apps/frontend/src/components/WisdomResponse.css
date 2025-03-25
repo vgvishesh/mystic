@@ -1,0 +1,69 @@
+.wisdom-response {
+  margin-top: 2rem;
+}
+
+.response-title {
+  color: var(--primary-color);
+  margin-bottom: 1rem;
+}
+
+.problem-statement {
+  margin-bottom: 1.5rem;
+  padding-bottom: 1rem;
+  border-bottom: 1px solid #e0e0e0;
+}
+
+.problem-statement h3 {
+  color: var(--primary-color);
+  font-size: 1.2rem;
+  margin-bottom: 0.5rem;
+}
+
+.wisdom-content {
+  margin-bottom: 1.5rem;
+  line-height: 1.8;
+}
+
+.wisdom-content p {
+  margin-bottom: 1rem;
+}
+
+/* Sanskrit shloka and transliteration styles */
+.sanskrit-verse {
+  background-color: rgba(179, 157, 219, 0.1);
+  border-left: 3px solid var(--primary-color);
+  padding: 1rem;
+  margin: 1.5rem 0;
+  border-radius: 4px;
+}
+
+.sanskrit-verse p {
+  font-size: 1.3rem;
+  line-height: 1.8;
+  text-align: center;
+  margin-bottom: 0;
+}
+
+.transliteration {
+  font-style: italic;
+  color: #555;
+  padding-left: 1rem;
+  border-left: 2px solid var(--accent-color);
+  margin: 1rem 0;
+}
+
+.wisdom-sources {
+  margin-top: 1.5rem;
+  padding-top: 1rem;
+  border-top: 1px solid #e0e0e0;
+}
+
+.wisdom-sources h4 {
+  color: var(--primary-color);
+  margin-bottom: 0.75rem;
+}
+
+.source-tags {
+  display: flex;
+  flex-wrap: wrap;
+}

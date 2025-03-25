@@ -1,0 +1,22 @@
+.footer {
+  background-color: var(--primary-color);
+  color: white;
+  padding: 1.5rem 0;
+  margin-top: 2rem;
+}
+
+.footer-container {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+.footer-content {
+  text-align: center;
+}
+
+.footer-tagline {
+  font-style: italic;
+  margin-top: 0.5rem;
+  opacity: 0.8;
+}
