@@ -1,0 +1,63 @@
+.quick-actions {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 1rem;
+}
+
+.quick-action-item {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  justify-content: flex-start;
+  background-color: rgba(255, 255, 255, 0.03);
+  border: 1px solid var(--border-color);
+  border-radius: var(--border-radius);
+  padding: 1.25rem;
+  cursor: pointer;
+  transition: all 0.2s ease;
+  text-align: left;
+  height: 100%;
+}
+
+.quick-action-item:hover {
+  background-color: rgba(151, 118, 240, 0.05);
+  border-color: rgba(151, 118, 240, 0.3);
+  transform: translateY(-2px);
+}
+
+.quick-action-icon {
+  display: flex;
+  /* background-color: rgba(151, 118, 240, 0.1); */
+  border-radius: 50%;
+  margin-bottom: 1rem;
+  color: var(--primary-color);
+}
+
+.quick-action-title {
+  font-weight: 600;
+  font-size: 1rem;
+  color: var(--text-color);
+  line-height: 1.3;
+}
+
+.quick-action-description {
+  font-size: 0.8rem;
+  color: var(--text-secondary);
+  line-height: 1.4;
+}
+
+@media (max-width: 768px) {
+  .quick-actions-grid {
+    grid-template-columns: repeat(2, 1fr);
+  }
+}
+
+@media (max-width: 640px) {
+  .quick-actions-grid {
+    grid-template-columns: 1fr;
+  }
+  
+  .quick-action-card {
+    min-height: auto;
+  }
+} 

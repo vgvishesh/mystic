@@ -1,5 +1,5 @@
 .wisdom-form-container {
-  margin: 2rem 0;
+  margin-top: auto;
 }
 
 .form-group {
@@ -21,4 +21,157 @@
 button:disabled {
   background-color: #b39ddb;
   cursor: not-allowed;
+}
+
+.input-container button {
+  min-width: 100px;
+}
+
+.wisdom-form {
+  display: flex;
+  gap: 0.5rem;
+  padding: 0.75rem;
+  background-color: var(--surface-color);
+  border-radius: var(--border-radius);
+  margin-bottom: 1rem;
+  transition: all 0.2s ease;
+  width: 100%;
+  border: 1px solid var(--surface-color);
+  outline: none;
+}
+
+/* Answer mode specific styles */
+.answer-mode .wisdom-form,
+.input-container .wisdom-form {
+  background-color: #000;
+}
+
+.wisdom-form:focus-within {
+  border-color: var(--primary-color);
+  box-shadow: 0 0 0 2px rgba(151, 118, 240, 0.1);
+}
+
+/* Special focus styling only for home mode */
+.home-mode .wisdom-form:focus-within {
+  border-color: var(--border-color);
+  box-shadow: 0 0 0 2px rgba(151, 118, 240, 0.1);
+}
+
+.input-field {
+  flex-grow: 1;
+  background: transparent;
+  border: none;
+  color: var(--text-color);
+  font-size: 1rem;
+  padding: 0.5rem;
+  outline: none;
+  font-family: inherit;
+  box-shadow: none;
+  -webkit-appearance: none;
+  -moz-appearance: none;
+  appearance: none;
+}
+
+/* Answer mode specific styles */
+.answer-mode .input-field,
+.input-container .input-field {
+  background-color: #000;
+  border-radius: 0;
+  border: none;
+}
+
+.input-field:focus {
+  outline: none;
+  border: none;
+  box-shadow: none;
+}
+
+.input-field::placeholder {
+  color: var(--text-secondary);
+  opacity: 0.6;
+}
+
+.submit-button {
+  background-color: var(--primary-color);
+  color: white;
+  border: none;
+  border-radius: 50% !important;
+  width: 40px !important;
+  height: 40px !important;
+  min-width: 40px !important;
+  min-height: 40px !important;
+  max-width: 40px !important;
+  max-height: 40px !important;
+  font-size: 1rem;
+  cursor: pointer;
+  transition: background-color 0.2s ease;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 0 !important;
+  aspect-ratio: 1 / 1;
+  flex-shrink: 0;
+  flex-grow: 0;
+}
+
+/* Answer page specific button fixes */
+.answer-mode .submit-button,
+.input-container .submit-button {
+  width: 40px !important;
+  height: 40px !important;
+  border-radius: 50% !important;
+  padding: 0 !important;
+  aspect-ratio: 1 / 1;
+  flex-shrink: 0;
+  flex-grow: 0;
+}
+
+.icon-spin {
+  animation: spin 1s linear infinite;
+}
+
+@keyframes spin {
+  from { transform: rotate(0deg); }
+  to { transform: rotate(360deg); }
+}
+
+.icon-pulse {
+  animation: pulse 1.5s ease-in-out infinite;
+}
+
+@keyframes pulse {
+  0% { opacity: 0.5; transform: scale(0.95); }
+  50% { opacity: 1; transform: scale(1.05); }
+  100% { opacity: 0.5; transform: scale(0.95); }
+}
+
+.submit-button:hover {
+  background-color: rgba(151, 118, 240, 0.8);
+}
+
+.submit-button:disabled {
+  background-color: rgba(151, 118, 240, 0.3);
+  cursor: not-allowed;
+}
+
+/* Home page specific styles */
+.home-mode .wisdom-form {
+  max-width: 100%;
+  width: 100%;
+  margin: 0 auto;
+  padding: 0.75rem;
+  background-color: rgba(255, 255, 255, 0.03);
+  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.15);
+  border: 1px solid rgba(255, 255, 255, 0.1);
+}
+
+.home-mode .input-field {
+  font-size: 1rem;
+  padding: 0.5rem;
+  width: 100%;
+}
+
+.home-mode .submit-button {
+  width: 40px;
+  height: 40px;
 }
