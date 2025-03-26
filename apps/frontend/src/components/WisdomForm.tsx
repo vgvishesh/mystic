@@ -1,47 +1,44 @@
 import React, { useState } from 'react';
+import { ArrowUp, Loader  } from 'react-feather';
 import './WisdomForm.css';
 
 interface WisdomFormProps {
   onSubmit: (problem: string) => void;
-  disabled: boolean;
+  disabled?: boolean;
 }
 
-const WisdomForm: React.FC<WisdomFormProps> = ({ onSubmit, disabled }) => {
-  const [problem, setProblem] = useState('');
-
+const WisdomForm: React.FC<WisdomFormProps> = ({ onSubmit, disabled = false }) => {
+  const [problem, setProblem] = useState<string>('');
+  
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
-    if (problem.trim()) {
+    if (problem.trim() && !disabled) {
       onSubmit(problem);
+      setProblem(''); // Clear the input after submission
     }
   };
 
+  // Detect if we're in the homepage context based on the parent container class
+  const isHomePage = document.querySelector('.home-mode') !== null;
+  const placeholder = isHomePage 
+    ? "Ask a question about life, consciousness, or spiritual growth..." 
+    : "Ask another question...";
+
   return (
-    <div className="wisdom-form-container">
-      <form onSubmit={handleSubmit}>
-        <div className="form-group">
-          <label htmlFor="problem">What challenge are you facing?</label>
-          <textarea
-            id="problem"
-            placeholder="Describe your problem or question..."
-            value={problem}
-            onChange={(e) => setProblem(e.target.value)}
-            required
-            disabled={disabled}
-            rows={5}
-          />
-        </div>
-        <div className="form-footer">
-          <button 
-            type="submit" 
-            className="btn" 
-            disabled={disabled || !problem.trim()}
-          >
-            {disabled ? 'Consulting...' : 'Get Wisdom'}
-          </button>
-        </div>
-      </form>
-    </div>
+    <form className="wisdom-form" onSubmit={handleSubmit}>
+      <input
+        type="text"
+        placeholder={placeholder}
+        value={problem}
+        onChange={(e) => setProblem(e.target.value)}
+        className="input-field"
+        disabled={disabled}
+        autoFocus={isHomePage}
+      />
+      <button type="submit" className="submit-button" disabled={!problem.trim() || disabled}>
+        {disabled ? <Loader size={18} className="icon-pulse" /> : <ArrowUp size={18} />}
+      </button>
+    </form>
   );
 };
 
