@@ -21,5 +21,9 @@
   "engines": {
     "node": ">=18.0.0"
   },
-  "packageManager": "yarn@1.22.19"
+  "packageManager": "yarn@1.22.19",
+  "dependencies": {
+    "react-content-loader": "^7.0.2",
+    "react-feather": "^2.0.10"
+  }
 }
