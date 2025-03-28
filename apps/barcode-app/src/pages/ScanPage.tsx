@@ -14,7 +14,7 @@ const ScanPage: React.FC = () => {
   const [error, setError] = useState<ScanError | null>(null);
   const navigate = useNavigate();
 
-  const handleBarcodeDetected = async (barcodeValue: string) => {
+  const handleBarcodeDetected = async (barcodeValue: string, format: string) => {
     setLoading(true);
     setError(null);
     
@@ -26,6 +26,7 @@ const ScanPage: React.FC = () => {
       const scanResults = JSON.parse(localStorage.getItem('scanResults') || '[]');
       scanResults.push({
         barcode: barcodeValue,
+        format: format,
         result: response.data,
         timestamp: new Date().toISOString()
       });
@@ -53,7 +54,11 @@ const ScanPage: React.FC = () => {
 
   return (
     <div className="scan-page">
-      <h1 className="page-title">Scan a Barcode</h1>
+      <h1 className="page-title">Scan a Barcode or QR Code</h1>
+      
+      <div className="scan-instructions">
+        <p>Position your device's camera to capture a barcode or QR code. The scanner will automatically detect and process the code.</p>
+      </div>
       
       <div className="scanner-wrapper">
         <BarcodeScanner 
@@ -65,25 +70,25 @@ const ScanPage: React.FC = () => {
       {loading && (
         <div className="scan-loading">
           <div className="loader"></div>
-          <p>Processing barcode...</p>
+          <p>Processing code...</p>
         </div>
       )}
       
       {error && (
         <div className="scan-error">
-          <p>{error.message}</p>
-          <p className="error-time">{error.timestamp.toLocaleTimeString()}</p>
+          <p><strong>Error:</strong> {error.message}</p>
+          <p className="error-time">Time: {error.timestamp.toLocaleTimeString()}</p>
         </div>
       )}
       
-      <div className="scan-instructions">
-        <h3>Instructions:</h3>
-        <ol>
-          <li>Press "Start Scanning" to activate the camera</li>
-          <li>Position the barcode within the scanner view</li>
-          <li>Hold steady until the barcode is detected</li>
-          <li>View the product details on the results page</li>
-        </ol>
+      <div className="scan-tips">
+        <h3>Scanning Tips:</h3>
+        <ul>
+          <li>Make sure the code is well-lit and clear of obstructions</li>
+          <li>Hold your device steady to prevent blurry images</li>
+          <li>Position the code within the guide area on the screen</li>
+          <li>For QR codes, ensure the entire square is visible</li>
+        </ul>
       </div>
     </div>
   );

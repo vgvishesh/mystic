@@ -16,6 +16,7 @@ interface ProductInfo {
 
 interface ScanResult {
   barcode: string;
+  format?: string;
   result: ProductInfo;
   timestamp: string;
 }
@@ -24,6 +25,8 @@ const ResultsPage: React.FC = () => {
   const [searchParams] = useSearchParams();
   const barcodeParam = searchParams.get('barcode');
   const [product, setProduct] = useState<ProductInfo | null>(null);
+  const [barcodeFormat, setBarcodeFormat] = useState<string>('');
+  const [barcodeValue, setBarcodeValue] = useState<string>('');
   const [loading, setLoading] = useState<boolean>(false);
   const [error, setError] = useState<string>('');
   const navigate = useNavigate();
@@ -37,6 +40,8 @@ const ResultsPage: React.FC = () => {
           // Get the most recent scan
           const latestScan = scanResults[scanResults.length - 1];
           setProduct(latestScan.result);
+          setBarcodeValue(latestScan.barcode);
+          setBarcodeFormat(latestScan.format || 'Unknown');
           return;
         } else {
           // No recent scans found
@@ -47,6 +52,7 @@ const ResultsPage: React.FC = () => {
       
       setLoading(true);
       setError('');
+      setBarcodeValue(barcodeParam);
       
       try {
         // Try to get the product from localStorage first
@@ -55,6 +61,7 @@ const ResultsPage: React.FC = () => {
         
         if (existingScan) {
           setProduct(existingScan.result);
+          setBarcodeFormat(existingScan.format || 'Unknown');
         } else {
           // If not in localStorage, fetch from API
           const response = await axios.get(`/api/barcode/${encodeURIComponent(barcodeParam)}`);
@@ -63,6 +70,7 @@ const ResultsPage: React.FC = () => {
           // Save to localStorage
           scanResults.push({
             barcode: barcodeParam,
+            format: 'Unknown', // No format info when fetching directly
             result: response.data,
             timestamp: new Date().toISOString()
           });
@@ -113,11 +121,6 @@ const ResultsPage: React.FC = () => {
               <span className="meta-label">Category:</span>
               <span className="meta-value">{product.category}</span>
             </div>
-            
-            <div className="meta-item">
-              <span className="meta-label">Product ID:</span>
-              <span className="meta-value">{product.id}</span>
-            </div>
           </div>
           
           <div className="product-description">
@@ -131,7 +134,7 @@ const ResultsPage: React.FC = () => {
               <div className="attributes-list">
                 {Object.entries(product.attributes).map(([key, value]) => (
                   <div key={key} className="attribute-item">
-                    <span className="attribute-label">{key}:</span>
+                    <span className="attribute-label">{key}</span>
                     <span className="attribute-value">{value}</span>
                   </div>
                 ))}
@@ -145,7 +148,7 @@ const ResultsPage: React.FC = () => {
   
   return (
     <div className="results-page">
-      <h1 className="page-title">Product Details</h1>
+      <h1 className="page-title">Product Information</h1>
       
       {loading ? (
         <div className="results-loading">
@@ -155,34 +158,34 @@ const ResultsPage: React.FC = () => {
       ) : error ? (
         <div className="results-error">
           <p>{error}</p>
-          <button className="action-button" onClick={handleScanAgain}>
-            Scan a Barcode
-          </button>
+          <button onClick={handleScanAgain} className="action-button">Scan a Code</button>
         </div>
-      ) : product ? (
+      ) : (
         <>
           <div className="results-card">
             <div className="barcode-info">
-              <h3>Barcode</h3>
-              <p className="barcode-value">{barcodeParam || 'Unknown'}</p>
+              <h3>Scanned {barcodeFormat.includes('QR') ? 'QR Code' : 'Barcode'}</h3>
+              <div className="code-details">
+                <div className="meta-item">
+                  <span className="meta-label">Value:</span>
+                  <span className="barcode-value">{barcodeValue}</span>
+                </div>
+                {barcodeFormat && (
+                  <div className="meta-item">
+                    <span className="meta-label">Format:</span>
+                    <span className="barcode-format">{barcodeFormat}</span>
+                  </div>
+                )}
+              </div>
             </div>
             
             {renderProductDetails()}
           </div>
           
           <div className="results-actions">
-            <button className="action-button" onClick={handleScanAgain}>
-              Scan Another Barcode
-            </button>
+            <button onClick={handleScanAgain} className="action-button">Scan Another Code</button>
           </div>
         </>
-      ) : (
-        <div className="results-error">
-          <p>No product information available</p>
-          <button className="action-button" onClick={handleScanAgain}>
-            Scan a Barcode
-          </button>
-        </div>
       )}
     </div>
   );

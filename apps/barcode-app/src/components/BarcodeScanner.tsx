@@ -1,9 +1,9 @@
 import React, { useEffect, useRef, useState } from 'react';
-import { BrowserMultiFormatReader, Result, NotFoundException } from '@zxing/library';
+import { BrowserMultiFormatReader, Result, NotFoundException, BarcodeFormat, DecodeHintType } from '@zxing/library';
 import './BarcodeScanner.css';
 
 interface BarcodeScannerProps {
-  onDetected: (result: string) => void;
+  onDetected: (result: string, format: string) => void;
   onError?: (error: Error) => void;
 }
 
@@ -12,19 +12,42 @@ const BarcodeScanner: React.FC<BarcodeScannerProps> = ({ onDetected, onError }) 
   const [permissions, setPermissions] = useState<boolean>(false);
   const [scanning, setScanning] = useState<boolean>(false);
   const [cameraError, setCameraError] = useState<string>('');
-  
-  // Create a reader instance
-  const reader = new BrowserMultiFormatReader();
+
+  // Configure formats to detect both barcodes and QR codes
+  const hints = new Map();
+  const formats = [
+    BarcodeFormat.QR_CODE,
+    BarcodeFormat.EAN_13,
+    BarcodeFormat.EAN_8,
+    BarcodeFormat.UPC_A,
+    BarcodeFormat.UPC_E,
+    BarcodeFormat.CODE_39,
+    BarcodeFormat.CODE_128,
+    BarcodeFormat.ITF,
+    BarcodeFormat.DATA_MATRIX,
+    BarcodeFormat.AZTEC
+  ];
+  hints.set(DecodeHintType.POSSIBLE_FORMATS, formats);
+  hints.set(DecodeHintType.TRY_HARDER, true);
+
+  // Create a reader instance with the configured formats
+  const reader = new BrowserMultiFormatReader(hints);
 
   // Check for camera permissions and set up scanner
   useEffect(() => {
     const setupScanner = async () => {
       try {
         // Request camera permission
-        const stream = await navigator.mediaDevices.getUserMedia({ video: { facingMode: 'environment' } });
+        const stream = await navigator.mediaDevices.getUserMedia({ 
+          video: { 
+            facingMode: 'environment',
+            width: { ideal: 1280 },
+            height: { ideal: 720 }
+          } 
+        });
         setPermissions(true);
         setCameraError('');
-        
+
         // Clean up the stream
         stream.getTracks().forEach(track => track.stop());
       } catch (err) {
@@ -33,9 +56,9 @@ const BarcodeScanner: React.FC<BarcodeScannerProps> = ({ onDetected, onError }) 
         if (onError) onError(err as Error);
       }
     };
-    
+
     setupScanner();
-    
+
     // Clean up when component unmounts
     return () => {
       stopScanning();
@@ -47,10 +70,10 @@ const BarcodeScanner: React.FC<BarcodeScannerProps> = ({ onDetected, onError }) 
       setCameraError('Camera permissions not granted');
       return;
     }
-    
+
     try {
       setScanning(true);
-      
+
       // Start continuous scanning from the video element
       await reader.decodeFromVideoDevice(
         null, // Use default camera
@@ -58,10 +81,16 @@ const BarcodeScanner: React.FC<BarcodeScannerProps> = ({ onDetected, onError }) 
         (result: Result | null, error?: NotFoundException) => {
           if (result) {
             const barcodeValue = result.getText();
-            onDetected(barcodeValue);
-            // Don't stop scanning - let the parent component decide
+            const format = result.getBarcodeFormat().toString();
+            console.log(`Detected ${format}: ${barcodeValue}`);
+
+            // Immediately stop scanning to prevent multiple API calls
+            stopScanning();
+
+            // Then call the onDetected callback
+            onDetected(barcodeValue, format);
           }
-          
+
           if (error && error instanceof NotFoundException) {
             // No barcode found - this is normal during scanning
             // We don't need to handle this as an error
@@ -80,8 +109,13 @@ const BarcodeScanner: React.FC<BarcodeScannerProps> = ({ onDetected, onError }) 
   };
 
   const stopScanning = () => {
-    reader.reset();
-    setScanning(false);
+    try {
+      reader.reset();
+      setScanning(false);
+      console.log('Scanner stopped');
+    } catch (err) {
+      console.error('Error stopping scanner:', err);
+    }
   };
 
   return (
@@ -91,7 +125,7 @@ const BarcodeScanner: React.FC<BarcodeScannerProps> = ({ onDetected, onError }) 
           <p>{cameraError}</p>
         </div>
       )}
-      
+
       <div className="scanner-container">
         <video 
           ref={videoRef} 
@@ -101,9 +135,12 @@ const BarcodeScanner: React.FC<BarcodeScannerProps> = ({ onDetected, onError }) 
         />
         {scanning && <div className="scanner-overlay">
           <div className="scanner-line"></div>
+          <div className="scanner-guide">
+            <div className="guide-text">Position barcode or QR code in this area</div>
+          </div>
         </div>}
       </div>
-      
+
       <div className="scanner-controls">
         {!scanning ? (
           <button 

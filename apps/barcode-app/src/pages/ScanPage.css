@@ -50,12 +50,15 @@
 }
 
 .scan-instructions {
-  background-color: #f8f9fa;
+  background-color: #f0f7ff;
+  color: #2c3e50;
   padding: 1.5rem;
   border-radius: 8px;
-  margin-top: 2rem;
+  margin: 1rem 0 2rem 0;
   width: 100%;
   max-width: 600px;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+  text-align: center;
 }
 
 .scan-instructions h3 {
